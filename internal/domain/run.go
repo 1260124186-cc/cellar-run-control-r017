@@ -72,6 +72,10 @@ func (r *FermentationRun) ReserveVessel(vesselID string, now time.Time) error {
 		return NewError(CodeRunState,
 			"completed or aborted runs cannot reserve a vessel")
 	}
+	if r.State != RunPlanned || r.VesselID != nil {
+		return NewError(CodeRunState,
+			"only a planned run without a vessel can reserve a vessel")
+	}
 	value := vesselID
 	r.VesselID = &value
 	r.State = RunReserved

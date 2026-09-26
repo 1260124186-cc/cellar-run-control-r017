@@ -35,11 +35,11 @@ func (v Vessel) Validate() error {
 }
 
 func (v *Vessel) Reserve(runID string, now time.Time) error {
-	if v.State == VesselRetired || v.State == VesselReserved {
-		return NewError(CodeVesselUnavailable, "vessel is not available for reservation")
-	}
 	if v.ActiveRunID != nil && *v.ActiveRunID == runID {
 		return NewError(CodeVesselUnavailable, "vessel is already assigned to this run")
+	}
+	if v.State != VesselAvailable || v.ActiveRunID != nil {
+		return NewError(CodeVesselUnavailable, "vessel is not available for reservation")
 	}
 	run := runID
 	v.State = VesselReserved
